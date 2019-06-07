@@ -1,0 +1,9 @@
+<resources>
+    <string name="contrase_a">Contraseña</string>
+    <string name="usuario">Usuario</string>
+    <string name="a">a...</string>
+    <string name="bienvenid">Bienvenid@</string>
+    <string name="agregar_usuario">AGREGAR USUARIO</string>
+    <string name="terminado">Terminado</string>
+    <string name="titulo_tarea">Tarea</string>
+</resources>
