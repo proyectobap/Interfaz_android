@@ -1,6 +1,5 @@
 package com.example.proyecto1;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -9,14 +8,17 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.view.View;
 
-import android.widget.Toast;
+
 
 import com.example.proyecto1.ClientMethods.ClienteTFG;
+import com.example.proyecto1.ClientMethods.ConexionHilo;
+import com.example.proyecto1.ClientMethods.EncryptModule;
+import com.example.proyecto1.ClientMethods.Informacion;
 
 
-
-public class MainActivity extends AppCompatActivity {
-    ClienteTFG clienteTFG;
+public class MainActivity extends AppCompatActivity implements ConexionHilo {
+    public ClienteTFG clienteTFG;
+    EncryptModule enc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +35,22 @@ public class MainActivity extends AppCompatActivity {
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
         TextInputEditText usuario=  findViewById(R.id.caja1);
-        TextInputEditText contraseña= findViewById(R.id.caja2);
-        clienteTFG= new ClienteTFG(usuario.getText().toString(), contraseña.getText().toString());
-        clienteTFG.iniciarConexion();
-            try {
-                wait(2000);
-            } catch (Exception e) {
+        TextInputEditText contrasenia= findViewById(R.id.caja2);
+        Informacion.iniciarConexion(usuario.getText().toString(), contrasenia.getText().toString(), this);
 
-            }
-            Intent intent = new Intent (this,ConexionAceptada.class);
-            startActivity(intent);
         }
 
 
+    @Override
+    public void response(boolean b) {
+        if (b) {
+            Intent intent= new Intent(this, Loading.class);
+            startActivity(intent);
+        } else {
 
-
-
-
-
-
-
+            Informacion.setConexion(null);
+        }
+    }
 }
 
 

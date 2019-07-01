@@ -9,13 +9,13 @@
         android:icon="@drawable/add"
         android:title="@string/a_adir_ticket"
         app:showAsAction="ifRoom"
-        android:onClick="newTicket"
+        android:onClick="activity_new_ticket"
         />
 
     <item
         android:id="@+id/desconectar"
         android:icon="@drawable/desconectar"
-        android:title="Item"
+        android:title="@string/desconectar"
         app:showAsAction="ifRoom"
         android:onClick="desconectar"
         />

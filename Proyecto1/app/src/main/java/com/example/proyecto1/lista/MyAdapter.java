@@ -1,6 +1,5 @@
 package com.example.proyecto1.lista;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,9 +49,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
 
+    public void clear() {
+
+        mDataset.clear();
+
+        notifyDataSetChanged();
+
+    }
 
 
 
+// Add a list of items -- change to type used
+
+    public void addAll(ArrayList<String> list) {
+
+        mDataset.addAll(list);
+
+        notifyDataSetChanged();
+
+    }
 
 
     // Create new views (invoked by the layout manager)
@@ -82,6 +97,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         return vh;
     }
+
+
 
 
 

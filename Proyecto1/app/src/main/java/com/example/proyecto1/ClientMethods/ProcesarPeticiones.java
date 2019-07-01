@@ -10,7 +10,6 @@ import java.util.Map;
 public class ProcesarPeticiones {
     public JSONObject peticiones(Map<String,String> mapa){
         JSONObject pregunta= new JSONObject();
-        System.out.println(mapa.entrySet());
         try {
             for (Map.Entry<String, String> p: mapa.entrySet()){
                 String clave= p.getKey();

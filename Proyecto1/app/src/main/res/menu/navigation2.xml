@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ticket"
+        android:icon="@drawable/tickets"
+        android:title="@string/ticket"/>
+
+    <item
+        android:id="@+id/eventos"
+        android:icon="@drawable/eventos"
+        android:title="@string/eventos" />
+
+    <item
+        android:id="@+id/elementos"
+        android:icon="@drawable/elementos"
+        android:title="@string/elementos" />
+
+</menu>

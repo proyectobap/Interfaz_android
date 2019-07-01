@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Contenedor_tickets">
+
+    <item
+        android:id="@+id/add_ticket"
+        android:icon="@drawable/tickets"
+        android:title="@string/a_adir_ticket"
+        />
+
+    <item
+        android:id="@+id/add_software"
+        android:icon="@drawable/software"
+        android:title="@string/a_adir_software"
+        />
+
+    <item
+        android:id="@+id/add_hardware"
+        android:icon="@drawable/hardware"
+        android:title="@string/a_adir_hardware"/>
+
+
+</menu>

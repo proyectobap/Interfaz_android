@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.proyecto1">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".ClientMethods.Informacion"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="proyecto"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ticket"></activity>
-        <activity android:name=".newticket" />
-        <activity android:name=".ConexionAceptada" />
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".lista.Tecnicos"></activity>
+        <activity android:name=".lista.Modificar_ticket" />
+        <activity android:name=".NewTicketAlone" />
+        <activity
+            android:name=".adds.Contenedor_Adds"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Loading" />
+        <activity
+            android:name=".Contenedor_tickets"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Contenedor"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".User" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
