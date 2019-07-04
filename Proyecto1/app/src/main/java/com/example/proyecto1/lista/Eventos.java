@@ -1,173 +1,188 @@
 package com.example.proyecto1.lista;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.example.proyecto1.ClientMethods.ClienteTFG;
+
 import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
-import com.example.proyecto1.Contenedor_tickets;
 import com.example.proyecto1.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.example.proyecto1.lista.ticket.id_ticket;
+
 
 public class Eventos extends Fragment implements RespuestaHilo {
-    ArrayList<String> elements;
-    TextView mTextview;
-    Contenedor_tickets c;
-    ArrayList<String> tecnicos= new ArrayList<>();
-    Map<String,String> mapa= new LinkedHashMap<>();
-    ProcesarPeticiones pet= new ProcesarPeticiones();
+
 
     public Eventos(){
 
     }
+/*Este fragment nos enseñará una recycler view con la lista de los eventos del ticket que abramos.
+Cogeremos todos los atributos de los eventos en distintos arrays para poder saber los datos de cada
+uno. Además, creamos un listener para cuando pulsemos en algún elemento de la lista; esto nos llevará
+a los detalles del evento en cuestión.
+ */
+    SwipeRefreshLayout swipeRefreshLayout;
+    ArrayList<String> descripcion= new ArrayList<>();
+    ArrayList<String> fecha_creacion= new ArrayList<>();
+    ArrayList<String> fecha_modificacion= new ArrayList<>();
+    ArrayList<String> event_type= new ArrayList<>();
+    ArrayList<String> event_id= new ArrayList<>();
+    Map<String, String> time= new LinkedHashMap<>();
+    Map<String, Boolean> is_done= new LinkedHashMap<>();
+    RecyclerView lista;
+    private MyAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    public String contenido;
+    private View.OnClickListener onItemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
+            int position = viewHolder.getAdapterPosition();
+            String sdescripcion = descripcion.get(position);
+            String sevent_type = event_type.get(position);
+            String sevent_id = event_id.get(position);
+            intent.putExtra("descripcion", sdescripcion);
+            intent.putExtra("estado", sevent_type);
+            intent.putExtra("event_id", sevent_id);
+            if (sevent_type.equals("2")){
+                intent.putExtra("time",time.get(sevent_id));
+                intent.putExtra("is_done", is_done.get(sevent_id));
+                Log.e("hola", String.valueOf(is_done.get(sevent_id)));
+            }
 
+            accederEvento(view);
+
+        }
+    };
+
+    Intent intent;
+    Map<String,String> mapa= new LinkedHashMap<>();
+    ProcesarPeticiones pet= new ProcesarPeticiones();
+    /*Al crearse la view, se esperará un segundo para que la petición no se mezcle con el resto,
+     ya que es un fragment que tendrá otros dos al lado.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.activity_ticket, container, false);
+        final View view = inflater.inflate(R.layout.fragment_eventos, container, false);
+        super.onCreateView(inflater, container, savedInstanceState);
+        intent = new Intent(getContext(), Evento.class);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                peticion();
+            }
+        }, 1000);
+
+        inicialite(view);
+
+
 
         return view;
 
-    }
-
-    private void initializeUI(View v) {
-
-        Bundle s = getActivity().getIntent().getExtras();
-        String creacion= "\nFecha de creacion:\n" + s.getString("fecha_creacion");
-        String modificacion= "\nFecha de modificacion:\n" + s.getString("fecha_creacion");
-        String estado = "\nEstado:\n" + estado(s.getString("estado"));
-
-        mTextview = (TextView)v.findViewById(R.id.desc);
-
-        mTextview.setText(s.getString("descripcion"));
-
-        mTextview = (TextView)v.findViewById(R.id.fecha_creacion);
-
-        mTextview.setText(creacion);
-
-        mTextview = (TextView)v.findViewById(R.id.fecha_modificacion);
-
-        mTextview.setText(modificacion);
-
-        mTextview = (TextView)v.findViewById(R.id.estado);
-
-        mTextview.setText(estado);
-
-        mTextview = (TextView)v.findViewById(R.id.tecnicos);
-
-        mTextview.setText(mostrarTecnicos(tecnicos));
-
-        peticionElementos();
-
-
 
     }
 
-    public String estado(String s){
-        switch (s) {
-            case "1":
-                s = "Abierto";
-                return s;
+//Este método es para inicializar la lista de la recycler view y adaptarla a las descripciones de los eventos
 
-
-            case "2":
-                s = "Asignado";
-                return s;
-
-            case "3":
-                s = "En espera";
-                return s;
-
-            case "4":
-                s = "";
-                return s;
-
-            case "5":
-                s = "Solucionado";
-                return s;
-
-            case "6":
-                s = "Cerrado";
-                return s;
-
-        }
-        return s;
-    }
-
-    public void peticionTecnicos(){
-        mapa.put("peticion","techRelation");
-        mapa.put("ticket_id", getActivity().getIntent().getExtras().getString("id"));
-        JSONObject tickets=pet.peticiones(mapa);
-        Informacion.getConexion().setInstruccion(tickets, this);
-    }
-
-    public void peticionElementos(){
-        mapa.put("peticion", "LISTELEMENTTYPE");
-        JSONObject tickets=pet.peticiones(mapa);
-        Informacion.getConexion().setInstruccion(tickets, this);
-    }
-
-    public void conseguirTecnicos(JSONArray listado) throws Exception {
-        tecnicos.clear();
-
-        for (int i = 0; i < listado.length(); ++i) {
-            JSONObject rec = listado.getJSONObject(i);
-            tecnicos.add(rec.getString("assigned_tech"));
-
-        }
+    public void inicialite(View v){
+        lista= (RecyclerView)v.findViewById(R.id.simpleListView);
+        lista.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        lista.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new MyAdapter(descripcion);
+        lista.setAdapter(adapter);
+        adapter.onItemClickListener(onItemClickListener);
 
     }
 
-    public void conseguirElementos(JSONArray listado) throws JSONException {
-        elements.clear();
+/*Con este método conseguimos los eventos una vez realizada la petición (ya que la respuesta de la
+petición llamará a este método). Miraremos el tipo de evento, y si no es 4 seguirá rellenando las listas,
+ya que el 4 es el estado de cerrado. Si es 2 es una tarea, y como tiene distintos atributos que un evento
+normal, relacionaremos el id de ese evento para recoger sus atributos correctamente y poder acceder
+a ellos de forma correcta
+ */
+    public void conseguirEventos(JSONArray listado) throws Exception {
+        descripcion.clear();
+        fecha_creacion.clear();
+        fecha_modificacion.clear();
+        event_id.clear();
+        event_type.clear();
+        time.clear();
+        is_done.clear();
+                for (int i = 0; i < listado.length(); ++i) {
+                    JSONObject rec = listado.getJSONObject(i);
+                    if (!rec.getString("event_type").equals("4")) {
+                        descripcion.add(rec.getString("event_desc"));
+                        event_id.add(rec.getString("event_id"));
+                        event_type.add(rec.getString("event_type"));
+                        if (rec.getString("event_type").equals("2")) {
+                            Log.e("Evento", rec.toString());
+                            time.put(rec.getString("event_id"), rec.getString("time"));
+                            is_done.put((rec.getString("event_id")), rec.getBoolean("is_done"));
+                            Log.e("map", String.valueOf(is_done.get(rec.getString("event_id"))));
+                        }
+                    }
+                }
 
-        for (int i = 0; i < listado.length(); ++i){
-            JSONObject rec = listado.getJSONObject(i);
-            elements.add(rec.getString("element_id") + " " + rec.getString("internal_name") );
-        }
+                lista.setAdapter(adapter);
+
+
     }
 
-    public String mostrarTecnicos(ArrayList<String> t){
-        String tec = "";
-        for(int x=0;x<t.size();x++) {
-            tec = tec + "\n" + t.get(x);
-        }
 
-        return tec;
+    public void peticion(){
+        mapa.put("peticion","listevents");
+        mapa.put("ticket_id", id_ticket);
+        JSONObject eventos=pet.peticiones(mapa);
+        Informacion.getConexion().setInstruccion(eventos, this);
     }
+
+
+
+
+
+    public void accederEvento(View v){
+
+        startActivity(intent);
+
+
+    }
+
+
 
     @Override
     public void respuesta(JSONObject respuesta) throws Exception {
         // Recoger respuesta del servidor y procesarla
+        JSONArray content = respuesta.getJSONArray("content");
         if (respuesta.getInt("response") == 200) {
-            Log.e("ID", String.valueOf(ClienteTFG.contenido));
-            JSONArray content = respuesta.getJSONArray("content");
-            if (content.getJSONObject(0).has("element_id")){
-                conseguirElementos(content);
-            }
-            else{
-                Log.e("Etiquetas",content.toString());
-                conseguirTecnicos(content);
-            }
-
+            Log.e("Etiquetas",content.toString());
+            conseguirEventos(content);
+        } else {
+            Log.e("Etiquetas",content.toString());
         }
     }
-}
 
+
+
+
+
+}

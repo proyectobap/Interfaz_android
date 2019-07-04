@@ -43,5 +43,36 @@
     <string name="a_adir_t_cnico">Añadir técnico</string>
     <string name="desasignar_t_cnico">Desasignar técnico</string>
     <string name="ver_t_cnicos_asociados">Ver técnicos asociados</string>
+    <string name="enviar_nuevo_evento">Enviar nuevo evento</string>
+    <string name="enviar_nueva_tarea">Enviar nueva tarea</string>
+    <string name="marcar_si_es_una_tarea_a_realizar">Marcar si es una tarea a realizar</string>
+    <string name="a_adir_evento">Añadir evento</string>
+    <string-array name="types_events">
+        <item>Abierto</item>
+        <item>Seguimiento</item>
+        <item>Cerrado</item>
+    </string-array>
+    <string-array name="estado_ticket">
+        <item>Abierto</item>
+        <item>Asignado</item>
+        <item>En espera</item>
+        <item>Solucionado</item>
+        <item>Cerrado</item>
+    </string-array>
+    <string-array name="user_types">
+        <item>Cliente</item>
+        <item>Técnico</item>
+        <item>Supervisor</item>
+        <item>Administrador</item>
+    </string-array>
+    <string name="title_activity_modificar__evento">Modificar_Evento</string>
+    <string name="modificar_evento">Modificar evento</string>
     <string name="modificar_ticket">Modificar ticket</string>
+    <string name="primer_apellido">Primer apellido</string>
+    <string name="email">Email</string>
+    <string name="crear_nuevo_usuario">Crear nuevo usuario</string>
+    <string name="nombre_de_su_usuario">Nombre de su usuario</string>
+    <string name="crear_usuario">Crear usuario</string>
+
+
 </resources>

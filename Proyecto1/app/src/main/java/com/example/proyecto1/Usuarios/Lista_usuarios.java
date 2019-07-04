@@ -18,7 +18,6 @@ import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
 import com.example.proyecto1.Loading;
 import com.example.proyecto1.R;
-import com.example.proyecto1.User;
 import com.example.proyecto1.lista.MyAdapter;
 
 
@@ -31,6 +30,10 @@ import java.util.Map;
 
 public class Lista_usuarios extends Fragment implements RespuestaHilo {
 
+/*Esta clase creará la lista de usuarios. Obtendremos los nombres y apellidos, email y tipo de usuario.
+También habrá un swipe para refrescar la información haciendo otra vez la petición. También habrá un
+listener para poder elegir un usuario que queramos ver con detenimiento.
+ */
     public Lista_usuarios(){
 
     }
@@ -44,7 +47,7 @@ public class Lista_usuarios extends Fragment implements RespuestaHilo {
     ArrayList<String> user_type= new ArrayList<>();
 
     RecyclerView lista;
-    View v;
+
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     public String contenido;
@@ -61,7 +64,6 @@ public class Lista_usuarios extends Fragment implements RespuestaHilo {
 
         }
     };
-
 
 
     Map<String,String> mapa= new LinkedHashMap<>();
@@ -88,7 +90,7 @@ public class Lista_usuarios extends Fragment implements RespuestaHilo {
 
 
 
-
+//Con este método conseguiremos los datos de los users cada vez que refresquemos
     public void conseguirUsers(JSONArray listado) throws Exception {
             users.clear();
             email.clear();
@@ -102,7 +104,7 @@ public class Lista_usuarios extends Fragment implements RespuestaHilo {
         }
 
     }
-
+//Con este método conseguimos los datos de los users al iniciar, ya que los obtenemos de la view Loading
     public void getExtras(View v){
         users = Loading.users;
         email = Loading.email;
@@ -124,13 +126,9 @@ public class Lista_usuarios extends Fragment implements RespuestaHilo {
         Informacion.getConexion().setInstruccion(usuarios, this);
     }
 
+//Este método actualizará la view con la lista haciendo la petición
     public void actualizar(View v){
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                peticion();
-            }
-        }, 1500);
+        peticion();
         lista= (RecyclerView)v.findViewById(R.id.simpleListView);
         lista.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -141,13 +139,13 @@ public class Lista_usuarios extends Fragment implements RespuestaHilo {
         swipeRefreshLayout.setRefreshing(false);
     }
 
+//Este método servirá para crear el intent y ver en detalle los datos del usuario
     public void accederUsuario(View v, String a, String e, String i){
         Intent intent = new Intent(getActivity(), User.class);
         intent.putExtra("user", a);
         intent.putExtra("email", e);
         intent.putExtra("user_type", i);
         startActivity(intent);
-
 
     }
 

@@ -247,24 +247,6 @@ public class ClienteTFG implements Runnable {
         return token;
     }
 
-    /******************************************************************************/
 
-    public static JSONObject crearTicket(String titulo, String descripcion) {
-        JSONObject prueba = new JSONObject();
-        try {
-            prueba.put("peticion","newTicket");
-            prueba.put("title", titulo);
-            prueba.put("description", descripcion);
-            prueba.put("status", 2);
-            prueba.put("owner", 2);
-            prueba.put("object", 1);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        return prueba;
-
-    }
 
 }

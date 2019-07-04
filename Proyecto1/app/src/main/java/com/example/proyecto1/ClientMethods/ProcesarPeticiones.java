@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-
+//Este método nos servirá para conseguir el map que enviemos. Cogerá todos los valores y llaves y creará un JSON para mandar peticiones
 public class ProcesarPeticiones {
     public JSONObject peticiones(Map<String,String> mapa){
         JSONObject pregunta= new JSONObject();

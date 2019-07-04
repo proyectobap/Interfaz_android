@@ -17,7 +17,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
 
 
-    // Provide a suitable constructor (depends on the kind of dataset)
+    //Este constructor nos da un set de datos (depende del tipo de datos que metamos, en este caso un array list
     public MyAdapter(ArrayList<String> myDataset) {
         mDataset = myDataset;
 
@@ -26,9 +26,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         mOnItemClickListener = itemClickListener;
     }
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+    //Este método proporciona una referencia para las views para cada tipo de item.
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView textView= itemView.findViewById(R.id.textView);
@@ -48,7 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     }
 
-
+//Limpia los datos del set de datos
     public void clear() {
 
         mDataset.clear();
@@ -59,21 +58,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
 
 
-// Add a list of items -- change to type used
-
-    public void addAll(ArrayList<String> list) {
-
-        mDataset.addAll(list);
-
-        notifyDataSetChanged();
-
-    }
 
 
-    // Create new views (invoked by the layout manager)
 
 
-    // Replace the contents of a view (invoked by the layout manager)
+
+    // Este método remplaza el contenido de la view
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String texto= mDataset.get(position);
@@ -81,7 +71,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    //Este método devuelve el tamaño de los datos
     @Override
     public int getItemCount() {
         return mDataset.size();

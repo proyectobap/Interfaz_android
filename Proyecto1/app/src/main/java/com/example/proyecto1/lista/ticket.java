@@ -27,6 +27,12 @@ import java.util.Map;
 
 
 public class ticket extends Fragment implements RespuestaHilo {
+
+/*Esta clase nos dará la información del ticket que elijamos en la lista de tickets. Tendremos la
+descripción, título, id del ticket, fecha de creación, fecha de la última modificación, y estado
+del ticket. También tendremos dos botones, uno para ir a la activity para modificar el ticket y otro
+para poder saber el técnico asociado.
+ */
     TextView mTextview;
     Intent intent;
     Contenedor_tickets c;
@@ -90,19 +96,19 @@ public class ticket extends Fragment implements RespuestaHilo {
 
     }
 
+//Con esta petición ya sabremos el técnico asociado del ticket, pero no lo mostrará a no ser que pasemos a la siguiente ventana
     public void pedirTec(){
         mapa.put("peticion","techRelation");
         mapa.put("ticket_id", id_ticket);
         JSONObject tickets=pet.peticiones(mapa);
         Informacion.getConexion().setInstruccion(tickets, this);
     }
+//Este método inicializará la interfaz. Creará unos strings y los distintos campos que queremos mostrar.
 
     private void initializeUI(View v, Bundle s) {
 
         String id = "Id del ticket:\n" + id_ticket;
         String titulo = "\nTítulo:\n" + s.getString("titulo")+ "\n";
-        String owner = "\nNúmero del creador del ticket:\n" + s.getString("ticket_owner");
-        String object = "\nNúmero del objecto del ticket:\n" + s.get("ticket_object");
         String creacion= "\nFecha de creación:\n" + s.getString("fecha_creacion");
         String modificacion= "\nFecha de modificación:\n" + s.getString("fecha_creacion");
         String estado = "\nEstado:\n" + estado(s.getString("estado"));
@@ -120,14 +126,6 @@ public class ticket extends Fragment implements RespuestaHilo {
 
         mTextview.setText(s.getString("descripcion"));
 
-        mTextview = (TextView)v.findViewById(R.id.owner);
-
-        mTextview.setText(owner);
-
-        mTextview = (TextView)v.findViewById(R.id.object);
-
-        mTextview.setText(object);
-
         mTextview = (TextView)v.findViewById(R.id.fecha_creacion);
 
         mTextview.setText(creacion);
@@ -143,13 +141,12 @@ public class ticket extends Fragment implements RespuestaHilo {
         swipeRefreshLayout.setRefreshing(false);
 
     }
-
+//Esto cambiará el número de estado por un string para que la información se entienda de forma correcta
     public String estado(String s){
         switch (s) {
             case "1":
                 s = "Abierto";
                 return s;
-
 
             case "2":
                 s = "Asignado";
@@ -174,7 +171,7 @@ public class ticket extends Fragment implements RespuestaHilo {
         }
         return s;
     }
-
+//Este método cogerá los datos del ticket y los mandará a la clase de modificar ticket
     public void modify(String a, String e, String i, String o, String u){
         Intent intent = new Intent(getContext(), Modificar_ticket.class);
         intent.putExtra("id", id_ticket);
@@ -197,8 +194,8 @@ public class ticket extends Fragment implements RespuestaHilo {
     @Override
     public void respuesta(JSONObject respuesta) throws Exception {
         // Recoger respuesta del servidor y procesarla
+        JSONArray content = respuesta.getJSONArray("content");
         if (respuesta.getInt("response") == 200) {
-            JSONArray content = respuesta.getJSONArray("content");
             Log.e("Etiquetas",content.toString());
             tecnicos.add(content.getJSONObject(0).getString("assigned_tech"));
             String tec = "Número del técnico asociado:\n";

@@ -35,13 +35,10 @@ public class NewSoftware extends Fragment implements RespuestaHilo {
     TextInputEditText name;
     TextInputEditText developer;
     TextInputEditText version;
-    String n;
-    String d;
-    String v;
 
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
-
+//Esta petición servirá para crear un elemento software. Necesitaremos nombre, desarrollador y versión
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,9 +58,9 @@ public class NewSoftware extends Fragment implements RespuestaHilo {
         return view;
     }
 
+    //Esta petición creará un nuevo elemento software, creando un json con la petición y lo necesario para mandarla
     public void new_Software(){
         try {
-
             mapa.clear();
             mapa.put("peticion", "newsoftware");
             mapa.put("internal_name", name.getText().toString());
@@ -77,7 +74,7 @@ public class NewSoftware extends Fragment implements RespuestaHilo {
             toast.show();
         }
     }
-
+//Esta petición asignará dicho elemento creado al ticket que se tiene abierto en ese momento
     public void asignar_Software(String id){
         mapa.clear();
         mapa.put("peticion", "assignelement");
@@ -87,7 +84,7 @@ public class NewSoftware extends Fragment implements RespuestaHilo {
         Informacion.getConexion().setInstruccion(asignacion, this);
     }
 
-
+    //El método asignar solamente se llamará cuando se llame al método de crear el elemento, ya que contiene un ID
     @Override
     public void respuesta(JSONObject respuesta) {
         // Recoger respuesta del servidor y procesarla
@@ -95,8 +92,10 @@ public class NewSoftware extends Fragment implements RespuestaHilo {
             if (respuesta.getInt("response") == 200) {
                 JSONArray content = respuesta.getJSONArray("content");
                 Log.e("Hola", content.getJSONObject(0).toString());
-                String id = content.getJSONObject(0).get("id").toString();
-                asignar_Software(id);
+                if(content.getJSONObject(0).has("id")){
+                    String id = content.getJSONObject(0).get("id").toString();
+                    asignar_Software(id);
+                }
             } if (respuesta.getInt("response") == 300) {
                 Log.e("Probando", respuesta.getJSONArray("content").toString());
             }

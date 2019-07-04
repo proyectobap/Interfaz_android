@@ -9,14 +9,17 @@
         android:name=".ClientMethods.Informacion"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="proyecto"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="BAP TICKETING"
+        android:roundIcon="@mipmap/iconoapp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".lista.Tecnicos"></activity>
+        <activity android:name=".New_user"></activity>
+        <activity android:name=".lista.Modificar_Evento" />
+        <activity android:name=".lista.Evento" />
+        <activity android:name=".lista.Tecnicos" />
         <activity android:name=".lista.Modificar_ticket" />
-        <activity android:name=".NewTicketAlone" />
+        <activity android:name=".lista.NewTicketAlone" />
         <activity
             android:name=".adds.Contenedor_Adds"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -27,7 +30,7 @@
         <activity
             android:name=".Contenedor"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".User" />
+        <activity android:name=".Usuarios.User" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

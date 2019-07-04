@@ -31,17 +31,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class newHardware extends Fragment implements RespuestaHilo {
-
+//Con esta clase se crea un nuevo elemento hardware.
     TextInputEditText name;
     TextInputEditText s;
     TextInputEditText brand;
     TextInputEditText model;
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
-    String n;
-    String sn;
-    String b;
-    String m;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,7 +59,7 @@ public class newHardware extends Fragment implements RespuestaHilo {
         });
         return v;
     }
-
+//Esta será la petición para hacer un elemento, meteremos en la petición el nombre, el serial, bran y modelo
     public void new_Hardware(){
         try {
             mapa.put("peticion", "newhardware");
@@ -79,7 +76,7 @@ public class newHardware extends Fragment implements RespuestaHilo {
         }
     }
 
-
+//Esta petición asignará un hardware al ticket abierto en el momento de hacer el elemento
     public void asignar_Hardware(String id){
         mapa.clear();
         mapa.put("peticion", "assignelement");
@@ -89,16 +86,20 @@ public class newHardware extends Fragment implements RespuestaHilo {
         Informacion.getConexion().setInstruccion(asignacion, this);
     }
 
+//La petición asignar_Hardware solo se activará cuando se cree un nuevo elemento, ya que se pedirá el id que devuelve esa petición
     @Override
     public void respuesta(JSONObject respuesta) {
         // Recoger respuesta del servidor y procesarla
         try {
             if (respuesta.getInt("response") == 200) {
                 JSONArray content = respuesta.getJSONArray("content");
-                String id = content.getJSONObject(0).getString("id");
-                asignar_Hardware(id);
+                if (content.getJSONObject(0).has("id")){
+                    String id = content.getJSONObject(0).getString("id");
+                    asignar_Hardware(id);
+                }
+
             } else {
-                Log.e("hola","error");
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

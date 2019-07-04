@@ -1,20 +1,17 @@
-package com.example.proyecto1;
+package com.example.proyecto1.Usuarios;
 
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.proyecto1.ClientMethods.ClienteTFG;
 import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
+import com.example.proyecto1.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,61 +19,41 @@ import org.json.JSONObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Own_User extends Fragment implements RespuestaHilo {
+public class User extends AppCompatActivity implements RespuestaHilo {
 
     TextView mTextview;
     Map<String, String> mapa = new LinkedHashMap<>();
     ProcesarPeticiones pet = new ProcesarPeticiones();
-    TextInputEditText pass;
 
+/*Este será la clase para un usuario que hayamos elegido desde la lista de usuarios. Contendrá los
+mismos datos que nuestro propio usuario: Nombre, apellidos, email y tipo de usuario.
+ */
     @Override
-    public View  onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final View view = inflater.inflate(R.layout.fragment_own__user, container, false);
-        pass = view.findViewById(R.id.new_password);
+        setContentView(R.layout.activity_user);
 
-        Button button = (Button) view.findViewById(R.id.boton_nueva_contraseña);
-        button.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                changePassword();
-            }
-        });
+        Bundle s = getIntent().getExtras();
+        String email = "\nEmail:\n" + s.getString("email");
+        String tipo = "\nTipo de usuario:\n" + estado(s.getString("user_type"));
 
+        mTextview = (TextView) findViewById(R.id.user);
 
+        mTextview.setText(s.getString("user"));
 
-        String email= "\nEmail:\n" + Loading.own_email.get(0);
-        String tipo = "\nTipo de usuario:\n" + estado(Loading.own_type.get(0));
-
-        mTextview = (TextView)view.findViewById(R.id.own_user);
-
-        mTextview.setText(Loading.own_user.get(0));
-
-        mTextview = (TextView)view.findViewById(R.id.own_email);
+        mTextview = (TextView) findViewById(R.id.email);
 
         mTextview.setText(email);
 
-        mTextview = (TextView)view.findViewById(R.id.own_tipo_usuario);
+        mTextview = (TextView) findViewById(R.id.tipo_usuario);
 
         mTextview.setText(tipo);
 
-        return view;
-    }
-
-    public void changePassword(){
-        mapa.put("peticion", "modifyownpassword");
-        mapa.put("shdw_passwd", pass.getText().toString());
-        JSONObject tickets = pet.peticiones(mapa);
-        Informacion.getConexion().setInstruccion(tickets, this);
-        Toast toast = Toast.makeText(getContext(), "Contraseña modificada", Toast.LENGTH_LONG);
-        toast.show();
     }
 
 
-    public String estado(String s){
+    //Este método devuelve el tipo de usuario que eres según tu número, para que cualquiera pueda entenderlo
+    public String estado(String s) {
         switch (s) {
             case "1":
                 s = "Usuario sin login";
@@ -103,7 +80,6 @@ public class Own_User extends Fragment implements RespuestaHilo {
         return s;
     }
 
-
     @Override
     public void respuesta(JSONObject respuesta) throws Exception {
         // Recoger respuesta del servidor y procesarla
@@ -116,5 +92,4 @@ public class Own_User extends Fragment implements RespuestaHilo {
 
         }
     }
-
 }

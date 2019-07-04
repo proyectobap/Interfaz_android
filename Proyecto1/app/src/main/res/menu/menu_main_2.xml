@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Contenedor">
+    tools:context=".Contenedor_tickets">
 
     <item
         android:id="@+id/añadir"
         android:icon="@drawable/add"
         android:title="@string/a_adir_ticket"
         app:showAsAction="ifRoom"
-        android:onClick="activity_new_ticket"
+        android:onClick="newTicket"
         />
 
     <item
@@ -19,6 +19,7 @@
         app:showAsAction="ifRoom"
         android:onClick="desconectar"
         />
+
 
 
 </menu>

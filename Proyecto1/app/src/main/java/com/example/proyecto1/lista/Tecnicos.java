@@ -7,12 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
+import com.example.proyecto1.Loading;
 import com.example.proyecto1.R;
 
 import org.json.JSONArray;
@@ -33,11 +35,22 @@ public class Tecnicos extends AppCompatActivity implements RespuestaHilo {
     ProcesarPeticiones pet= new ProcesarPeticiones();
     TextView text;
     SwipeRefreshLayout swipeRefreshLayout;
+    Button asignar;
+    Button desasignar;
 
+    /*Esta clase nos proporcionará los técnicos para poder asignarlos a un ticket en cuestión.
+    Tendremos el swipe para refrescar la información y el número del técnico asociado.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tecnicos);
+        asignar= findViewById(R.id.add_tec);
+        desasignar= findViewById(R.id.erase_tec);
+        if (Loading.own_type.equals("2")){
+            asignar.setVisibility(View.INVISIBLE);
+            desasignar.setVisibility(View.INVISIBLE);
+        }
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -52,6 +65,9 @@ public class Tecnicos extends AppCompatActivity implements RespuestaHilo {
 
     }
 
+/*Este método servirá para asignar un técnico al ticket. Se mostrará una caja de alerta al hacer click
+en el botón de asignar técnico que te pedirá el número de técnico para asignar.
+ */
     public void asignarTecnicos(View v){
         mapa.clear();
         mapa.put("peticion","assigntech");
@@ -78,6 +94,9 @@ public class Tecnicos extends AppCompatActivity implements RespuestaHilo {
         dialog.show();
     }
 
+/*Este método funciona muy parecido al anterior, solo que manda una petición para desasignar al técnico.
+Al darle al botón, se mostrará una ventana que te pide el número de técnico que quieres desasignar.
+ */
     public void desasignarTecnicos(View v){
         mapa.clear();
         mapa.put("peticion","DELETETECHASSIGNED");
@@ -107,7 +126,7 @@ public class Tecnicos extends AppCompatActivity implements RespuestaHilo {
     public void realizar(JSONObject tecnicos){
         Informacion.getConexion().setInstruccion(tecnicos, this);
     }
-
+//Con este método cambiamos la view para que se muestre el número del técnico asociado
     public void conseguirTecnicos(final JSONArray listado) throws Exception {
         this.runOnUiThread(new Runnable() {
             @Override
@@ -124,7 +143,7 @@ public class Tecnicos extends AppCompatActivity implements RespuestaHilo {
         });
 
     }
-
+//Con este método sabemos el id del técnico que tenga asociado el ticket
     public void pedirTec(){
         mapa.clear();
         mapa.put("peticion","techRelation");

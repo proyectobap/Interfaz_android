@@ -1,7 +1,7 @@
 package com.example.proyecto1.lista;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.example.proyecto1.lista.ticket.id_ticket;
+
 
 public class Elements extends Fragment implements RespuestaHilo {
     TextView mTextview;
@@ -30,14 +32,16 @@ public class Elements extends Fragment implements RespuestaHilo {
     ArrayList<String> elementos= new ArrayList<>();
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
-    SwipeRefreshLayout swipeRefreshLayout;
     ArrayList<String> ids= new ArrayList<>();
     View view;
 
     public Elements(){
 
     }
-
+/*En esta clase llamaremos al elemento asignado al ticket en cuestión.
+El handler será para retrasar un poco la petición, ya que pueden solaparse las peticiones de los
+eventos y los detalles del ticket
+ */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,83 +52,44 @@ public class Elements extends Fragment implements RespuestaHilo {
             public void run() {
                 peticionElementos();
             }
-        }, 1000);
+        }, 1500);
 
 
         mTextview = (TextView)view.findViewById(R.id.elementos);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
 
         initializeUI();
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                peticionElementos();
-            }
-        });
 
         return view;
 
     }
-
+/*Este método llama a RunOnUiThread para que el hilo que no es principal pueda (metiendo lo que haya
+dentro del método al propio hilo principal) modificar la interfaz, ya que puede dar error.
+ */
     public void initializeUI() {
         getActivity().runOnUiThread(new Runnable() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void run() {
-                if (elementos.size() == 0){
+                if (elementos.size() == 0) {
                     mTextview.setText("Sin elementos");
-                }else{
+                } else {
                     mTextview.setText(elementos.get(0));
                 }
 
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-
-
-
     }
-
-    public String estado(String s){
-        switch (s) {
-            case "1":
-                s = "Abierto";
-                return s;
-
-
-            case "2":
-                s = "Asignado";
-                return s;
-
-            case "3":
-                s = "En espera";
-                return s;
-
-            case "4":
-                s = "";
-                return s;
-
-            case "5":
-                s = "Solucionado";
-                return s;
-
-            case "6":
-                s = "Cerrado";
-                return s;
-
-        }
-        return s;
-    }
-
+//Con este método pedimos el elemento asociado al ticket
     public void peticionElementos(){
         mapa.clear();
         mapa.put("peticion","ELEMENTRELATION");
-        mapa.put("ticket_id", getActivity().getIntent().getExtras().getString("id"));
+        mapa.put("ticket_id", id_ticket);
         JSONObject tickets=pet.peticiones(mapa);
         Informacion.getConexion().setInstruccion(tickets, this);
     }
-
+/*Este método recogerá el elemento si es de tipo hardware y luego ajustará la interfaz con el método
+    para que aparezca
+ */
     public void conseguirElementoHardware(JSONArray listado) throws Exception {
         elementos.clear();
 
@@ -139,7 +104,9 @@ public class Elements extends Fragment implements RespuestaHilo {
         initializeUI();
 
     }
-
+    /*Este método recogerá el elemento si es de tipo software y luego ajustará la interfaz con el método
+        para que aparezca
+     */
     public void conseguirElementoSoftware(JSONArray listado) throws Exception {
         elementos.clear();
 
@@ -152,7 +119,7 @@ public class Elements extends Fragment implements RespuestaHilo {
         initializeUI();
 
     }
-
+//Con este método los detalles del elemento asociado al ticket (ya que el anterior solo nos daba el id)
     public void peticionElemento(String ids){
         mapa.clear();
         mapa.put("peticion","ELEMENTDETAILS");
@@ -161,9 +128,10 @@ public class Elements extends Fragment implements RespuestaHilo {
         Informacion.getConexion().setInstruccion(elemento, this);
     }
 
-    public void waiting(final String ids){
-        peticionElemento(ids);
-    }
+   /*En la respuesta comprobaremos si el elemento relacionado es un hardware o un software.
+   Si es un software, la respuesta de la petición contendrá "developer", y si es hardware contendrá
+   "brand"
+    */
     @Override
     public void respuesta(JSONObject respuesta) throws Exception {
         // Recoger respuesta del servidor y procesarla
@@ -177,19 +145,13 @@ public class Elements extends Fragment implements RespuestaHilo {
             if (content.getJSONObject(0).has("developer")){
                 conseguirElementoSoftware(content);
             } else {
-                ids.clear();
                 ids.add(content.getJSONObject(0).getString("element_id"));
-                ids.add(content.getJSONObject(1).getString("element_id"));
-                Log.e("prueba",ids.toString());
-                Log.e("otraprueba", String.valueOf(ids.size()));
-                for (int i = 0; i < 2; ++i) {
-                    waiting(ids.get(i));
-                    Log.e("prueba",ids.toString());
+                peticionElemento(ids.get(0));
                 }
             }
 
-        } else {
-            Log.e("fallo",respuesta.toString());
+         else {
+
         }
     }
 }

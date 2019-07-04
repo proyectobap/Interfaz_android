@@ -1,7 +1,6 @@
 package com.example.proyecto1.lista;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,10 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 
+import com.example.proyecto1.ClientMethods.ClienteTFG;
 import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
@@ -23,6 +21,7 @@ import com.example.proyecto1.Loading;
 import com.example.proyecto1.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -38,7 +37,11 @@ public class Lista_tickets extends Fragment implements RespuestaHilo {
     public Lista_tickets(){
 
     }
-
+/*Con este fragment expondremos nuestros tickets en una recycler view de forma correcta. Crearemos
+distintos arraylist para recoger todos los atributos de los estados, un SwipeRefresLayout para poder
+actualiza la lista, un adapter para el recycler view y un listener para la view para poder elegir
+un ticket y pasar a la vista del ticket con toda su información
+ */
     SwipeRefreshLayout swipeRefreshLayout;
     ArrayList<String> titulos= new ArrayList<>();
     ArrayList<String> descripcion= new ArrayList<>();
@@ -49,7 +52,6 @@ public class Lista_tickets extends Fragment implements RespuestaHilo {
     ArrayList<String> ticket_object= new ArrayList<>();
     ArrayList<String> ticket_owner= new ArrayList<>();
     RecyclerView lista;
-    ImageButton button;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     public String contenido;
@@ -72,7 +74,7 @@ public class Lista_tickets extends Fragment implements RespuestaHilo {
         }
     };
 
-    JSONArray listado;
+
 
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
@@ -95,18 +97,15 @@ public class Lista_tickets extends Fragment implements RespuestaHilo {
 
     }
 
+/*Con este método actualizaremos la lista creando una nueva petición y después haciendo que la lista
+se actualice con esta nueva información
+ */
     public void actualizar(View v){
         try {
             peticion();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                peticion();
-            }
-        }, 500);
         lista= (RecyclerView)v.findViewById(R.id.simpleListView);
         lista.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
@@ -117,6 +116,9 @@ public class Lista_tickets extends Fragment implements RespuestaHilo {
         swipeRefreshLayout.setRefreshing(false);
     }
 
+/*Este método nos sirve para coger toda la información que ha dejado la ventana de loading. Cogeremos
+Cada atributo con variables static creadas en la anterior vista.
+ */
     public void getExtras(View v){
         titulos = Loading.titulos;
         descripcion = Loading.descripcion;
@@ -136,7 +138,9 @@ public class Lista_tickets extends Fragment implements RespuestaHilo {
         swipeRefreshLayout.setRefreshing(false);
 
     }
-
+/*Este método nos dará los tickets una vez realizada la petición (que se realiza al actualizar la página,
+no al crearse). No cogerá ningún ticket que tenga de status id 6, porque esos son tickets cerrados.
+ */
     public void conseguirTickets(JSONArray listado) throws Exception {
         titulos.clear();
         descripcion.clear();
@@ -149,31 +153,51 @@ public class Lista_tickets extends Fragment implements RespuestaHilo {
 
         for (int i = 0; i < listado.length(); ++i) {
             JSONObject rec = listado.getJSONObject(i);
-            titulos.add(rec.getString("title"));
-            descripcion.add(rec.getString("desc"));
-            fecha_creacion.add(rec.getString("create_time"));
-            fecha_modificacion.add(rec.getString("mod_date"));
-            estado_ticket.add(rec.getString("ticket_status_id"));
-            ticket_id.add(rec.getString("ticket_id"));
-            ticket_object.add(rec.getString("ticket_object"));
-            ticket_owner.add(rec.getString("ticket_owner"));
-
+            if (!rec.getString("ticket_status_id").equals("6")) {
+                titulos.add(rec.getString("title"));
+                descripcion.add(rec.getString("desc"));
+                fecha_creacion.add(rec.getString("create_time"));
+                fecha_modificacion.add(rec.getString("mod_date"));
+                estado_ticket.add(rec.getString("ticket_status_id"));
+                ticket_id.add(rec.getString("ticket_id"));
+                ticket_object.add(rec.getString("ticket_object"));
+                ticket_owner.add(rec.getString("ticket_owner"));
+            }
 
             }
 
     }
 
+/*Este método obtendrá una lista de tickets en función de si eres cliente o no. Si eres cliente
+    solo te mostrará los tickets que contengan tu id de usuario. Si no lo eres, te mostrará todos los tickets
+ */
+    public void peticion() {
+        if (checkId()){
+            String filter =  "WHERE ticket_owner = " +
+                    Loading.own_id;
+            Log.e("filter",filter);
+            mapa.put("peticion", "LISTTICKETFILTER");
+            mapa.put("filter", filter);
+            JSONObject tickets = pet.peticiones(mapa);
+            Informacion.getConexion().setInstruccion(tickets, this);
+        } else {
+            mapa.put("peticion", "listticket");
+            JSONObject tickets = pet.peticiones(mapa);
+            Informacion.getConexion().setInstruccion(tickets, this);
+        }
+    }
 
-    public void peticion(){
-        mapa.put("peticion","listTicket");
-        JSONObject tickets=pet.peticiones(mapa);
-        Informacion.getConexion().setInstruccion(tickets, this);
+    //Comprobación de que el tipo de usuario es cliente (es 2 en la base de datos)
+    public boolean checkId() {
+        return Loading.own_type.equals("2");
     }
 
 
 
 
-
+/*Este método creará el intent de un ticket en particular y cogerá la información que le pasemos al
+hacer click en un ticket en particular.
+ */
     public void accederTicket(View v, String a, String e, String i, String o, String u, String t,
                               String ow, String ob){
         Intent intent = new Intent(getContext(), Contenedor_tickets.class);

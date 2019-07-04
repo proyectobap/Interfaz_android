@@ -15,9 +15,16 @@
     <item
         android:id="@+id/desconectar"
         android:icon="@drawable/desconectar"
-        android:title="Item"
+        android:title="Desconectar"
         app:showAsAction="ifRoom"
         android:onClick="desconectar"
+        />
+    <item
+        android:id="@+id/crear_user"
+        android:icon="@drawable/usuario"
+        android:title="@string/crear_usuario"
+        app:showAsAction="ifRoom"
+        android:onClick="new_user"
         />
 
 

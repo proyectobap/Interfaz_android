@@ -21,5 +21,10 @@
         android:icon="@drawable/hardware"
         android:title="@string/a_adir_hardware"/>
 
+    <item
+        android:id="@+id/add_event"
+        android:icon="@drawable/eventos"
+        android:title="@string/a_adir_evento"/>
+
 
 </menu>

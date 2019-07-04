@@ -21,7 +21,6 @@ import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
 import com.example.proyecto1.adds.Contenedor_Adds;
-import com.example.proyecto1.adds.newticket;
 import com.example.proyecto1.lista.Elements;
 import com.example.proyecto1.lista.Eventos;
 import com.example.proyecto1.lista.ticket;
@@ -36,6 +35,10 @@ import java.util.Map;
 
 public class Contenedor_tickets extends AppCompatActivity implements RespuestaHilo {
 
+    /*La siguiente clase es un contenedor donde irán los fragmentos para los detalles del ticket,
+    los eventos y los elementos del ticket. Para ello vamos a necesitar los 3 fragmentos
+    recogidos en variables
+     */
     Elements e= new Elements();
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
@@ -45,7 +48,11 @@ public class Contenedor_tickets extends AppCompatActivity implements RespuestaHi
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
 
-
+    /*En la creación de la ventana, la view será el layout activity_contenedor_adds, crearemos una toolbar
+    Para poder seleccionar nuestros fragmentos y haremos un listener para que la aplicación detecte
+    la selección en la barra. Por último, crearemos los 3 fragmentos en orden inverso y esconderemos los
+    dos primeros
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +72,9 @@ public class Contenedor_tickets extends AppCompatActivity implements RespuestaHi
 
     }
 
+    /*Esto es el listener de los botones de la barra de navegación inferior. Dependiendo de cuál
+     se selecione, ocultará el activo y mostrará el indicado por el número
+      */
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -94,58 +104,9 @@ public class Contenedor_tickets extends AppCompatActivity implements RespuestaHi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main_2, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
-    public void addHardware(MenuItem item){
-        final EditText nombre = new EditText(getApplicationContext());
-        final EditText sn = new EditText(getApplicationContext());
-        final EditText brand = new EditText(getApplicationContext());
-        final EditText model = new EditText(getApplicationContext());
-        AlertDialog dialog = new AlertDialog.Builder(getApplicationContext())
-                .setTitle("Añadir elemento hardware")
-                .setMessage("Escribe en orden el nombre, sn, brand y modelo")
-                .setView(nombre)
-                .setView(sn)
-                .setView(brand)
-                .setView(model)
-                .setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        String name= nombre.getText().toString();
-                        String s = sn.getText().toString();
-                        String br = brand.getText().toString();
-                        String mod = model.getText().toString();
-
-                        mapa.clear();
-                        mapa.put("peticion","newhardware");
-                        mapa.put("internal_name", name);
-                        mapa.put("S/N", s);
-                        mapa.put("brand", br);
-                        mapa.put("model", mod);
-                        JSONObject j=pet.peticiones(mapa);
-                        peticion(j);
-
-                        mapa.put("peticion","ELEMENTRELATION");
-                        mapa.put("ticket_id", getIntent().getExtras().getString("id"));
-                        j=pet.peticiones(mapa);
-                        peticion(j);
-
-                    }
-
-                })
-
-                .setNegativeButton("Cancelar", null)
-                .create();
-
-        dialog.show();
-    }
-
-    public void add(MenuItem item){
-        Intent intent= new Intent(this, Contenedor_Adds.class);
-        startActivity(intent);
-        }
 
 
 
@@ -162,11 +123,11 @@ public class Contenedor_tickets extends AppCompatActivity implements RespuestaHi
         Informacion.getConexion().setInstruccion(j, this);
     }
 
+    /*Estos métodos servirán para crear el menú superior de la pantalla. Tendrá dos botones, uno para
+    ir al content que tiene las ventanas para crear tickets, eventos o
+    elementos o para desconectar la aplicación
+     */
     public void desconectar(MenuItem item){
-
-        StrictMode.ThreadPolicy policy= new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
-        StrictMode.setThreadPolicy(policy);
         mapa.put("peticion","exit");
         JSONObject peticiones=pet.peticiones(mapa);
         Informacion.getConexion().setInstruccion(peticiones, this);

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".lista.NewTicketAlone">
+    tools:context=".lista.Evento">
 
     <View
         android:layout_width="match_parent"
@@ -24,23 +24,6 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/titulo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/titulo"
-                android:drawableStart="@drawable/teclado"
-                android:drawablePadding="8dp"
-                android:textColorHint="@android:color/white">
-
-                <requestFocus/>
-            </android.support.design.widget.TextInputEditText>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:drawablePadding="8dp"
             android:textAlignment="center"
             >
@@ -55,31 +38,14 @@
                 />
         </android.support.design.widget.TextInputLayout>
 
-
-        <Spinner
-            android:id="@+id/estado_ticket"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
-        <android.support.design.widget.TextInputLayout
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/checkbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:textAlignment="center"
-            >
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/object"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/objeto"
-                android:drawablePadding="8dp"
-                android:textColorHint="@android:color/white"
-                />
-        </android.support.design.widget.TextInputLayout>
+            android:text="@string/marcar_si_es_una_tarea_a_realizar"/>
 
         <Button
-            android:id="@+id/botonticket"
+            android:id="@+id/botonevento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -87,9 +53,8 @@
             android:layout_marginRight="100dp"
             android:drawablePadding="-50dp"
             android:background="@drawable/boton_prueba"
-            android:drawableStart="@drawable/agenda"
-            android:text="Enviar"
-            android:onClick="newTicketAlone"/>
+            android:text="@string/enviar_nuevo_evento"
+            />
 
     </LinearLayout>
 

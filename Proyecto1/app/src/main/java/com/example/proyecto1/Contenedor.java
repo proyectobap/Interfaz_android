@@ -8,17 +8,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
 import com.example.proyecto1.Usuarios.Lista_usuarios;
-import com.example.proyecto1.adds.newticket;
+import com.example.proyecto1.Usuarios.Own_User;
 import com.example.proyecto1.lista.Lista_tickets;
+import com.example.proyecto1.lista.NewTicketAlone;
 
 
 import org.json.JSONObject;
@@ -28,7 +29,9 @@ import java.util.Map;
 
 public class Contenedor extends AppCompatActivity implements RespuestaHilo {
 
-
+    /*La siguiente clase es un contenedor donde irán los fragmentos para las listas de tickets, usuarios
+    y el propio usuario. Para ello vamos a necesitar los 3 fragmentos recogidos en variables
+     */
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
     final Fragment fragment1 = new Lista_tickets();
@@ -37,8 +40,13 @@ public class Contenedor extends AppCompatActivity implements RespuestaHilo {
     Lista_usuarios l= new Lista_usuarios();
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
+    Intent intent;
 
-
+    /*En la creación de la ventana, la view será el layout activity_contenedor_adds, crearemos una toolbar
+    Para poder seleccionar nuestros fragmentos y haremos un listener para que la aplicación detecte
+    la selección en la barra. Por último, crearemos los 3 fragmentos en orden inverso y esconderemos los
+    dos primeros
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +54,7 @@ public class Contenedor extends AppCompatActivity implements RespuestaHilo {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
+        intent= new Intent(this, New_user.class);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -58,6 +65,9 @@ public class Contenedor extends AppCompatActivity implements RespuestaHilo {
 
     }
 
+    /*Esto es el listener de los botones de la barra de navegación inferior. Dependiendo de cuál
+  se selecione, ocultará el activo y mostrará el indicado por el número
+   */
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -85,33 +95,30 @@ public class Contenedor extends AppCompatActivity implements RespuestaHilo {
     };
 
 
+/*Estos métodos servirán para crear el menú superior de la pantalla. Tendrá dos botones, uno para
+ir a la activity de crear un ticket nuevo (sin haber seleccionado uno antes de la lista) o para
+desconectar la aplicación
+ */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
     public void desconectar(MenuItem item){
-
-        StrictMode.ThreadPolicy policy= new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
-        StrictMode.setThreadPolicy(policy);
         mapa.put("peticion","exit");
         JSONObject peticiones=pet.peticiones(mapa);
         Informacion.getConexion().setInstruccion(peticiones,this);
         System.exit(0);
     }
 
+    public void new_user(MenuItem item){
+        startActivity(intent);
+    }
+
     @Override
-    public void respuesta(JSONObject respuesta) throws Exception {
-        // Recoger respuesta del servidor y procesarla
-        Log.d("PRUEBA", "Estoy pasando por aqui");
-        if (respuesta.getInt("response") == 200) {
-            Log.e("PRUEBA", "good");
-
-        } else {
-
-        }
+    public void respuesta(JSONObject respuesta) {
     }
 
     public void newTicket(MenuItem item){
