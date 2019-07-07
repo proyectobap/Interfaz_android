@@ -38,6 +38,11 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"/>
 
+                <Spinner
+                    android:id="@+id/spinner_tecnicos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
                 <Button
                     android:id="@+id/add_tec"
                     android:orientation="vertical"
@@ -51,6 +56,11 @@
                     android:onClick="asignarTecnicos"
 
                     />
+
+                <Spinner
+                    android:id="@+id/spinner_tecnicos_desasignar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
                 <Button
                     android:id="@+id/erase_tec"
                     android:orientation="vertical"

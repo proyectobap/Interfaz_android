@@ -97,7 +97,6 @@ tres primeros
         mapa.put("peticion","exit");
         JSONObject peticiones=pet.peticiones(mapa);
         Informacion.getConexion().setInstruccion(peticiones,this);
-        System.exit(0);
     }
 
 

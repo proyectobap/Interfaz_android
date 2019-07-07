@@ -39,7 +39,7 @@ Cogeremos todos los atributos de los eventos en distintos arrays para poder sabe
 uno. Además, creamos un listener para cuando pulsemos en algún elemento de la lista; esto nos llevará
 a los detalles del evento en cuestión.
  */
-    SwipeRefreshLayout swipeRefreshLayout;
+
     ArrayList<String> descripcion= new ArrayList<>();
     ArrayList<String> fecha_creacion= new ArrayList<>();
     ArrayList<String> fecha_modificacion= new ArrayList<>();

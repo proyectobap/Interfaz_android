@@ -12,14 +12,6 @@
         android:onClick="newTicket"
         />
 
-    <item
-        android:id="@+id/desconectar"
-        android:icon="@drawable/desconectar"
-        android:title="@string/desconectar"
-        app:showAsAction="ifRoom"
-        android:onClick="desconectar"
-        />
-
 
 
 </menu>

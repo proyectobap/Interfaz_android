@@ -66,29 +66,44 @@ public class NewEvent extends Fragment implements RespuestaHilo {
     public void new_Ticket(View v) {
         try {
             mapa.clear();
+            String desc = descripcion.getText().toString();
             if (check.isChecked()) {
                 mapa.put("peticion", "newtask");
-                mapa.put("event_desc", descripcion.getText().toString());
-                mapa.put("ticket_id", id_ticket);
-                mapa.put("time", String.valueOf(0));
-                mapa.put("is_done", String.valueOf(false));
+                if (desc.equals("")) {
+                    Toast toast = Toast.makeText(getContext(), "Rellene todos los campos",
+                            Toast.LENGTH_LONG);
+                    toast.show();
+                } else {
+                    mapa.put("event_desc", descripcion.getText().toString());
+                    mapa.put("ticket_id", id_ticket);
+                    mapa.put("time", String.valueOf(0));
+                    mapa.put("is_done", String.valueOf(false));
+                }
             } else {
-                mapa.put("peticion", "newevent");
-                mapa.put("event_desc", descripcion.getText().toString());
-                mapa.put("ticket_id", id_ticket);
-                mapa.put("event_type", String.valueOf(1));
+                if (desc.equals("")) {
+                    Toast toast = Toast.makeText(getContext(), "Rellene todos los campos",
+                            Toast.LENGTH_LONG);
+                    toast.show();
+                } else {
+                    mapa.put("peticion", "newevent");
+                    mapa.put("event_desc", descripcion.getText().toString());
+                    mapa.put("ticket_id", id_ticket);
+                    mapa.put("event_type", String.valueOf(1));
+                }
+                JSONObject ticket = pet.peticiones(mapa);
+                Informacion.getConexion().setInstruccion(ticket, this);
+                Toast toast = Toast.makeText(getContext(), "Evento creado",
+                        Toast.LENGTH_LONG);
+                toast.show();
             }
-            JSONObject ticket = pet.peticiones(mapa);
-            Informacion.getConexion().setInstruccion(ticket, this);
-            Toast toast = Toast.makeText(getContext(), "Evento creado",
-                    Toast.LENGTH_LONG);
-            toast.show();
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             Toast toast = Toast.makeText(getContext(), "Rellene todos los campos, por favor",
                     Toast.LENGTH_LONG);
             toast.show();
         }
     }
+
 
 
     @Override

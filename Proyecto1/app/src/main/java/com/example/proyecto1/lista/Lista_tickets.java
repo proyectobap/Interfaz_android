@@ -51,6 +51,7 @@ un ticket y pasar a la vista del ticket con toda su información
     ArrayList<String> ticket_id= new ArrayList<>();
     ArrayList<String> ticket_object= new ArrayList<>();
     ArrayList<String> ticket_owner= new ArrayList<>();
+    ArrayList<String> tickets_completos = new ArrayList<>();
     RecyclerView lista;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -110,7 +111,7 @@ se actualice con esta nueva información
         lista.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         lista.setLayoutManager(new LinearLayoutManager(getContext()));
-        MyAdapter adapter = new MyAdapter(titulos);
+        MyAdapter adapter = new MyAdapter(tickets_completos);
         lista.setAdapter(adapter);
         adapter.onItemClickListener(onItemClickListener);
         swipeRefreshLayout.setRefreshing(false);
@@ -120,6 +121,7 @@ se actualice con esta nueva información
 Cada atributo con variables static creadas en la anterior vista.
  */
     public void getExtras(View v){
+        tickets_completos = Loading.tickets_completos;
         titulos = Loading.titulos;
         descripcion = Loading.descripcion;
         fecha_creacion = Loading.fecha_creacion;
@@ -132,7 +134,7 @@ Cada atributo con variables static creadas en la anterior vista.
         lista.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         lista.setLayoutManager(new LinearLayoutManager(getContext()));
-        MyAdapter adapter = new MyAdapter(titulos);
+        MyAdapter adapter = new MyAdapter(tickets_completos);
         lista.setAdapter(adapter);
         adapter.onItemClickListener(onItemClickListener);
         swipeRefreshLayout.setRefreshing(false);
@@ -150,10 +152,13 @@ no al crearse). No cogerá ningún ticket que tenga de status id 6, porque esos 
         ticket_id.clear();
         ticket_object.clear();
         ticket_owner.clear();
+        tickets_completos.clear();
 
         for (int i = 0; i < listado.length(); ++i) {
             JSONObject rec = listado.getJSONObject(i);
             if (!rec.getString("ticket_status_id").equals("6")) {
+                tickets_completos.add(rec.getString("title") + "\n" +
+                        rec.getString("desc") + "\n" + rec.getString("mod_date"));
                 titulos.add(rec.getString("title"));
                 descripcion.add(rec.getString("desc"));
                 fecha_creacion.add(rec.getString("create_time"));

@@ -8,7 +8,7 @@
     <application
         android:name=".ClientMethods.Informacion"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/iconoapp"
         android:label="BAP TICKETING"
         android:roundIcon="@mipmap/iconoapp"
         android:supportsRtl="true"

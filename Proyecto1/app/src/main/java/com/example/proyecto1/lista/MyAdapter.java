@@ -30,11 +30,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView textView= itemView.findViewById(R.id.textView);
+        public TextView textView;
 
 
         public MyViewHolder(View v) {
             super(v);
+            this.textView = itemView.findViewById(R.id.textView);
             v.setTag(this);
             v.setOnClickListener(mOnItemClickListener);
 
@@ -81,11 +82,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflamos la vista desde el xml
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, null);
-        MyViewHolder vh = new MyViewHolder(v);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View v = layoutInflater.inflate(R.layout.item, parent, false);
 
-
-        return vh;
+        return new MyViewHolder(v);
     }
 
 

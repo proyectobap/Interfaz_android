@@ -16,10 +16,12 @@ import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
 import com.example.proyecto1.ClientMethods.RespuestaHilo;
 import com.example.proyecto1.Contenedor_tickets;
+import com.example.proyecto1.Loading;
 import com.example.proyecto1.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,13 +37,16 @@ para poder saber el técnico asociado.
  */
     TextView mTextview;
     Intent intent;
+    String tec;
     Contenedor_tickets c;
-    ArrayList<String> tecnicos= new ArrayList<>();
+    public static ArrayList<String> tecnicos= new ArrayList<>();
+    public static ArrayList<String> ids_tecnicos_asociados= new ArrayList<>();
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
     public static String id_ticket;
     Button button;
     Button button2;
+    Object object;
     SwipeRefreshLayout swipeRefreshLayout;
     public ticket(){
 
@@ -112,7 +117,8 @@ para poder saber el técnico asociado.
         String creacion= "\nFecha de creación:\n" + s.getString("fecha_creacion");
         String modificacion= "\nFecha de modificación:\n" + s.getString("fecha_creacion");
         String estado = "\nEstado:\n" + estado(s.getString("estado"));
-        String stecnicos= "\nTécnicos asignados:\n" + tecnicos.toString();
+        String objeto = "\nUsuario objeto del ticket:\n" +
+                Loading.usuarios.get(s.getString("ticket_object"));
 
         mTextview = (TextView)v.findViewById(R.id.ticket_id);
 
@@ -137,6 +143,10 @@ para poder saber el técnico asociado.
         mTextview = (TextView)v.findViewById(R.id.estado);
 
         mTextview.setText(estado);
+
+        mTextview = (TextView)v.findViewById(R.id.object);
+
+        mTextview.setText(objeto);
 
         swipeRefreshLayout.setRefreshing(false);
 
@@ -194,14 +204,20 @@ para poder saber el técnico asociado.
     @Override
     public void respuesta(JSONObject respuesta) throws Exception {
         // Recoger respuesta del servidor y procesarla
+        Log.e("hola",respuesta.toString());
         JSONArray content = respuesta.getJSONArray("content");
         if (respuesta.getInt("response") == 200) {
             Log.e("Etiquetas",content.toString());
-            tecnicos.add(content.getJSONObject(0).getString("assigned_tech"));
-            String tec = "Número del técnico asociado:\n";
+            tecnicos.clear();
+            for (int i = 0; i < content.length(); i++) {
+                object = content.getJSONObject(i).get("assigned_tech");
+                tec = object.toString();
+                tecnicos.add(Loading.tecnicos.get(tec));
+            }
+            tec = "Técnicos asociados:\n";
 
             for (int x = 0; x < tecnicos.size(); x++) {
-                tec = tec + tecnicos.get(x);
+                tec = tec + tecnicos.get(x) + "\n";
             }
             Log.e("tecnicos",tecnicos.toString());
             intent.putExtra("tecnicos", tec);

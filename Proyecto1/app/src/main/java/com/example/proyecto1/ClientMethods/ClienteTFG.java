@@ -179,7 +179,6 @@ public class ClienteTFG implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /******************************************************************************/

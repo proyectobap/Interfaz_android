@@ -11,14 +11,6 @@
         app:showAsAction="ifRoom"
         android:onClick="newTicket"
         />
-
-    <item
-        android:id="@+id/desconectar"
-        android:icon="@drawable/desconectar"
-        android:title="Desconectar"
-        app:showAsAction="ifRoom"
-        android:onClick="desconectar"
-        />
     <item
         android:id="@+id/crear_user"
         android:icon="@drawable/usuario"

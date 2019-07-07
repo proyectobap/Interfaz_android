@@ -123,16 +123,10 @@ public class Contenedor_tickets extends AppCompatActivity implements RespuestaHi
         Informacion.getConexion().setInstruccion(j, this);
     }
 
-    /*Estos métodos servirán para crear el menú superior de la pantalla. Tendrá dos botones, uno para
+    /*Estos métodos servirán para crear el menú superior de la pantalla. Tendrá un botón, uno para
     ir al content que tiene las ventanas para crear tickets, eventos o
-    elementos o para desconectar la aplicación
+    elementos
      */
-    public void desconectar(MenuItem item){
-        mapa.put("peticion","exit");
-        JSONObject peticiones=pet.peticiones(mapa);
-        Informacion.getConexion().setInstruccion(peticiones, this);
-        System.exit(0);
-    }
 
     @Override
     public void respuesta(JSONObject respuesta) throws Exception {

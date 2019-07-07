@@ -48,8 +48,8 @@
     <string name="marcar_si_es_una_tarea_a_realizar">Marcar si es una tarea a realizar</string>
     <string name="a_adir_evento">Añadir evento</string>
     <string-array name="types_events">
-        <item>Abierto</item>
         <item>Seguimiento</item>
+        <item>Solución</item>
         <item>Cerrado</item>
     </string-array>
     <string-array name="estado_ticket">

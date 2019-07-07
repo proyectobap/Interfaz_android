@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -40,11 +41,16 @@ public class newticket extends Fragment implements RespuestaHilo, AdapterView.On
     TextInputEditText titulo;
     TextInputEditText descripcion;
     Spinner spinner;
+    Spinner tecnicos;
     String estado_ticket;
+    ArrayList<String> usuarios = new ArrayList<>();
+    ArrayList<String> ids_usuarios = new ArrayList<>();
     TextInputEditText object;
     int numero_estado_ticket;
+    String user_elegido;
     Map<String,String> mapa= new LinkedHashMap<>();
     ProcesarPeticiones pet= new ProcesarPeticiones();
+    ArrayAdapter<String> comboAdapter;
 
     //Esta clase crea un ticket, que necesita un titulo, descripción, estado y objeto
     @Override
@@ -59,7 +65,8 @@ public class newticket extends Fragment implements RespuestaHilo, AdapterView.On
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        object = view.findViewById(R.id.object);
+        tecnicos = view.findViewById(R.id.objeto_tickets);
+        tecnicos.setOnItemSelectedListener(this);
         Button button = (Button) view.findViewById(R.id.botonticket);
         button.setOnClickListener(new View.OnClickListener()
         {
@@ -69,40 +76,70 @@ public class newticket extends Fragment implements RespuestaHilo, AdapterView.On
                 new_Ticket(view);
             }
         });
+        crear_spinner();
         return view;
     }
 
     //Con esta petición cogemos el texto de la activity y se lo añadimos a un json para hacer la petición pertinente
     public void new_Ticket(View v){
         try {
-            mapa.put("peticion", "newticket");
-            mapa.put("title", titulo.getText().toString());
-            mapa.put("desc", descripcion.getText().toString());
-            mapa.put("status_id", String.valueOf(numero_estado_ticket));
-            mapa.put("ticket_owner", String.valueOf(ClienteTFG.contenido.getJSONObject(0).getInt("user_id")));
-            mapa.put("ticket_object", object.getText().toString());
-            JSONObject ticket = pet.peticiones(mapa);
-            Informacion.getConexion().setInstruccion(ticket, this);
-            Toast toast = Toast.makeText(getContext(), "Ticket creado",
-                    Toast.LENGTH_LONG);
-            toast.show();
+            mapa.clear();
+            if (titulo.getText().toString().equals("") || descripcion.getText().toString().equals("")){
+                Toast toast = Toast.makeText(getContext(), "Rellene todos los campos",
+                        Toast.LENGTH_LONG);
+                toast.show();
+            }else{
+                mapa.put("peticion", "newticket");
+                mapa.put("title", titulo.getText().toString());
+                mapa.put("desc", descripcion.getText().toString());
+                mapa.put("ticket_status_id", String.valueOf(numero_estado_ticket));
+                mapa.put("ticket_owner", Loading.own_id);
+                mapa.put("ticket_object", user_elegido);
+                JSONObject ticket = pet.peticiones(mapa);
+                Informacion.getConexion().setInstruccion(ticket, this);
+                Toast toast = Toast.makeText(getContext(), "Ticket creado",
+                        Toast.LENGTH_LONG);
+                toast.show();
+            }
+
         } catch (NullPointerException e){
             Toast toast = Toast.makeText(getContext(), "Rellene todos los campos, por favor",
                     Toast.LENGTH_LONG);
             toast.show();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        estado_ticket = String.valueOf(parent.getSelectedItem());
-        estado(estado_ticket);
+        switch (parent.getId()) {
+            case R.id.estado_ticket:
+                estado_ticket = String.valueOf(parent.getSelectedItem());
+                estado(estado_ticket);
+                break;
+            case R.id.objeto_tickets:
+                user_elegido = ids_usuarios.get(pos);
+                Log.e("hola", user_elegido);
+                break;
+        }
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
+    }
+
+    public void crear_spinner(){
+        String key;
+        String value;
+        for (Map.Entry<String, String> entry  : Loading.usuarios.entrySet()){
+            key = entry.getKey();
+            value = entry.getValue();
+            ids_usuarios.add(key);
+            usuarios.add(value);
+
+        }
+        comboAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, Loading.users);
+        tecnicos.setAdapter(comboAdapter);
+
     }
 
 
@@ -130,7 +167,12 @@ public class newticket extends Fragment implements RespuestaHilo, AdapterView.On
 
 
     @Override
-    public void respuesta(JSONObject respuesta) {
-
+    public void respuesta(JSONObject respuesta) throws JSONException {
+        if(respuesta.getInt("response") == 200){
+            Log.e("bien", "todo bien");
+        }
+        else{
+            Log.e("mal",respuesta.toString());
+        }
     }
 }

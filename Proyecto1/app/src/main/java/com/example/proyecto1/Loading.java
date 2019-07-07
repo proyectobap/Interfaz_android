@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ estáticas por si necesitamos acceder a la información en cualquier momento.
     public static String own_email;
     public static String own_type;
     public static String own_id;
+    public static ArrayList<String> tickets_completos= new ArrayList<>();
     public static ArrayList<String> titulos= new ArrayList<>();
     public static ArrayList<String> descripcion= new ArrayList<>();
     public static ArrayList<String> fecha_creacion= new ArrayList<>();
@@ -37,6 +39,9 @@ estáticas por si necesitamos acceder a la información en cualquier momento.
     public static ArrayList<String> ticket_id= new ArrayList<>();
     public static ArrayList<String> ticket_object= new ArrayList<>();
     public static ArrayList<String> ticket_owner= new ArrayList<>();
+    public static Map<String, String> tecnicos = new HashMap<>();
+    public static Map<String, String> usuarios = new HashMap<>();
+    Map<String, String> map_users = new LinkedHashMap<>();
     Intent intent;
 
     Map<String, String> mapa = new LinkedHashMap<>();
@@ -99,6 +104,14 @@ Todos los datos de todos los usuarios.
     public void conseguirUsers(JSONArray listado) throws Exception {
         for (int i = 0; i < listado.length(); ++i) {
             JSONObject rec = listado.getJSONObject(i);
+            usuarios.put(rec.getString("user_id"), rec.getString("name")+ " "+
+                    rec.getString("last_name"));
+            if(rec.getString("user_type").equals("3")){
+                tecnicos.put(rec.getString("user_id"),
+                        rec.getString("name")+ " "+ rec.getString("last_name"));
+            }
+            map_users.put(rec.getString("user_id"),
+                    rec.getString("name")+rec.getString("last_name"));
             if (!checkId()) {
                 if (rec.getInt("user_id") ==
                         ClienteTFG.contenido.getJSONObject(0).getInt("user_id")) {
@@ -128,15 +141,20 @@ Todos los datos de todos los usuarios.
     public void conseguirTickets(JSONArray listado) throws Exception {
         for (int i = 0; i < listado.length(); ++i) {
             JSONObject rec = listado.getJSONObject(i);
-            if (!rec.getString("ticket_status_id").equals("6")) {
-                titulos.add(rec.getString("title"));
-                descripcion.add(rec.getString("desc"));
-                fecha_creacion.add(rec.getString("create_time"));
-                fecha_modificacion.add(rec.getString("mod_date"));
-                estado_ticket.add(rec.getString("ticket_status_id"));
-                ticket_id.add(rec.getString("ticket_id"));
-                ticket_object.add(rec.getString("ticket_object"));
-                ticket_owner.add(rec.getString("ticket_owner"));
+            if(!rec.getString("ticket_id").equals("0")){
+                if (!rec.getString("ticket_status_id").equals("6")) {
+                    tickets_completos.add(rec.getString("title") + "\n" +
+                            rec.getString("desc") + "\n" + rec.getString("mod_date"));
+                    titulos.add(rec.getString("title"));
+                    descripcion.add(rec.getString("desc"));
+                    fecha_creacion.add(rec.getString("create_time"));
+                    fecha_modificacion.add(rec.getString("mod_date"));
+                    estado_ticket.add(rec.getString("ticket_status_id"));
+                    ticket_id.add(rec.getString("ticket_id"));
+                    ticket_object.add(rec.getString("ticket_object"));
+                    ticket_owner.add(rec.getString("ticket_owner"));
+            }
+
             }
         }
 

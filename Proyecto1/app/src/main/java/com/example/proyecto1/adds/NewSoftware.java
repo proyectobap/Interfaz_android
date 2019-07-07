@@ -61,13 +61,21 @@ public class NewSoftware extends Fragment implements RespuestaHilo {
     //Esta petición creará un nuevo elemento software, creando un json con la petición y lo necesario para mandarla
     public void new_Software(){
         try {
-            mapa.clear();
-            mapa.put("peticion", "newsoftware");
-            mapa.put("internal_name", name.getText().toString());
-            mapa.put("developer", developer.getText().toString());
-            mapa.put("version", version.getText().toString());
-            JSONObject software = pet.peticiones(mapa);
-            Informacion.getConexion().setInstruccion(software, this);
+            if (name.getText().toString().equals("") || developer.getText().toString().equals("") ||
+                    version.getText().toString().equals("")){
+                Toast toast = Toast.makeText(getContext(), "Rellene todos los campos",
+                        Toast.LENGTH_LONG);
+                toast.show();
+            }else{
+                mapa.clear();
+                mapa.put("peticion", "newsoftware");
+                mapa.put("internal_name", name.getText().toString());
+                mapa.put("developer", developer.getText().toString());
+                mapa.put("version", version.getText().toString());
+                JSONObject software = pet.peticiones(mapa);
+                Informacion.getConexion().setInstruccion(software, this);
+            }
+
         } catch (NullPointerException e){
             Toast toast = Toast.makeText(getContext(), "Rellene todos los campos, por favor",
                     Toast.LENGTH_LONG);

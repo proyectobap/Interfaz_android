@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.proyecto1.ClientMethods.Informacion;
 import com.example.proyecto1.ClientMethods.ProcesarPeticiones;
@@ -42,6 +43,7 @@ public class Contenedor extends AppCompatActivity implements RespuestaHilo {
     Fragment active = fragment1;
     Intent intent;
 
+
     /*En la creación de la ventana, la view será el layout activity_contenedor_adds, crearemos una toolbar
     Para poder seleccionar nuestros fragmentos y haremos un listener para que la aplicación detecte
     la selección en la barra. Por último, crearemos los 3 fragmentos en orden inverso y esconderemos los
@@ -51,7 +53,6 @@ public class Contenedor extends AppCompatActivity implements RespuestaHilo {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contenedor);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         intent= new Intent(this, New_user.class);
@@ -96,29 +97,38 @@ public class Contenedor extends AppCompatActivity implements RespuestaHilo {
 
 
 /*Estos métodos servirán para crear el menú superior de la pantalla. Tendrá dos botones, uno para
-ir a la activity de crear un ticket nuevo (sin haber seleccionado uno antes de la lista) o para
-desconectar la aplicación
+ir a la activity de crear un ticket nuevo (sin haber seleccionado uno antes de la lista) y otro
+para crear un usuario (si no eres un cliente)
  */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void desconectar(MenuItem item){
-        mapa.put("peticion","exit");
-        JSONObject peticiones=pet.peticiones(mapa);
-        Informacion.getConexion().setInstruccion(peticiones,this);
-        System.exit(0);
-    }
-
     public void new_user(MenuItem item){
-        startActivity(intent);
+        if(!Loading.own_type.equals("2")){
+            startActivity(intent);
+        } else{
+            Toast toast = Toast.makeText(this, "Los clientes no pueden añadir usuarios",
+                    Toast.LENGTH_LONG);
+            toast.show();
+        }
+
     }
 
     @Override
     public void respuesta(JSONObject respuesta) {
+    }
+
+
+    @Override
+    public void onBackPressed(){
+        mapa.put("peticion","exit");
+        JSONObject peticiones=pet.peticiones(mapa);
+        Informacion.getConexion().setInstruccion(peticiones,this);
+        Intent intent = new Intent (this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void newTicket(MenuItem item){

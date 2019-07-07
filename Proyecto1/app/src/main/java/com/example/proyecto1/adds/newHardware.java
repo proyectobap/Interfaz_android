@@ -62,13 +62,21 @@ public class newHardware extends Fragment implements RespuestaHilo {
 //Esta será la petición para hacer un elemento, meteremos en la petición el nombre, el serial, bran y modelo
     public void new_Hardware(){
         try {
-            mapa.put("peticion", "newhardware");
-            mapa.put("internal_name", name.getText().toString());
-            mapa.put("S/N", s.getText().toString());
-            mapa.put("brand", brand.getText().toString());
-            mapa.put("model", model.getText().toString());
-            JSONObject hardware = pet.peticiones(mapa);
-            Informacion.getConexion().setInstruccion(hardware, this);
+            if (name.getText().toString().equals("") || s.getText().toString().equals("") ||
+                    brand.getText().toString().equals("") || model.getText().toString().equals("")){
+                Toast toast = Toast.makeText(getContext(), "Rellene todos los campos",
+                        Toast.LENGTH_LONG);
+                toast.show();
+            }else{
+                mapa.put("peticion", "newhardware");
+                mapa.put("internal_name", name.getText().toString());
+                mapa.put("S/N", s.getText().toString());
+                mapa.put("brand", brand.getText().toString());
+                mapa.put("model", model.getText().toString());
+                JSONObject hardware = pet.peticiones(mapa);
+                Informacion.getConexion().setInstruccion(hardware, this);
+            }
+
         } catch (NullPointerException e){
             Toast toast = Toast.makeText(getContext(), "Rellene todos los campos, por favor",
                     Toast.LENGTH_LONG);

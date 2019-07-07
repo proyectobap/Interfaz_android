@@ -131,10 +131,10 @@ Este método usa un switch para elegir el número apropiado cada vez que haces u
 
     public int estado(String s){
         switch (s) {
-            case "Abierto":
+            case "Seguimiento":
                 numero_estado_evento = 1;
                 return numero_estado_evento;
-            case "Seguimiento":
+            case "Solución":
                 numero_estado_evento = 3;
                 return numero_estado_evento;
             case "Cerrado":
