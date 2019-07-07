@@ -22,6 +22,7 @@ import com.example.proyecto1.lista.MyAdapter;
 
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -91,19 +92,30 @@ listener para poder elegir un usuario que queramos ver con detenimiento.
 
 
 //Con este método conseguiremos los datos de los users cada vez que refresquemos
-    public void conseguirUsers(JSONArray listado) throws Exception {
-            users.clear();
-            email.clear();
-            user_type.clear();
-            for (int i = 0; i < listado.length(); ++i) {
-                JSONObject rec = listado.getJSONObject(i);
+
+    public void conseguirUsers(JSONArray listado) throws JSONException {
+        for (int i = 0; i < listado.length(); ++i) {
+            JSONObject rec = listado.getJSONObject(i);
+            if (!checkId()) {
                 users.add(rec.getString("name") + " " + rec.getString("last_name"));
                 email.add(rec.getString("email"));
                 user_type.add(rec.getString("user_type"));
+            }
 
         }
 
     }
+
+
+
+    public boolean checkId(){
+        if(Loading.own_type.equals("2")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 //Con este método conseguimos los datos de los users al iniciar, ya que los obtenemos de la view Loading
     public void getExtras(View v){
         users = Loading.users;
